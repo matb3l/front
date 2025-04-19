@@ -1,28 +1,24 @@
-import { useEffect, useState } from 'react'
-import './App.css'
-import { BrowserRouter, Route, Router } from 'react-router-dom'
-import api from './api/axios'
-
-
-
+import { useEffect, useState } from "react";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+import api from "@api/axios";
+import { Registration } from "@pages/auth/registration";
 
 function App() {
-  const [count, setCount] = useState(0)
-
+  const [count, setCount] = useState(0);
 
   useEffect(() => {
-    api.get('/projects').then((res) => {
-      console.log(res)
-    })
-  },[])
+    api.get("/projects").then((res) => {
+      console.log(res);
+    });
+  }, []);
 
   return (
     <BrowserRouter>
-      <Router>
-        <Route path='/registration' element={Registration}
-      </Router>
+      <Routes>
+        <Route path="/registration" element={<Registration />} />
+      </Routes>
     </BrowserRouter>
-  )
+  );
 }
 
-export default App
+export default App;
