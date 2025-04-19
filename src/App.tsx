@@ -1,23 +1,29 @@
-import { useEffect, useState } from "react";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
-import api from "@api/axios";
-import { Registration } from "@pages/auth/registration";
+import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
+import { Registration, Login, Auth } from "@pages/auth";
+import { AuthProvider, useAuth } from "@context/auth/AuthContext";
+import { Dashboard } from "@pages/dashboard";
+
+const ProtectedRoute = () => {
+  const { token } = useAuth();
+  if (!token) {
+    return <Navigate to="/auth" />;
+  }
+
+  return <Dashboard />;
+};
 
 function App() {
-  const [count, setCount] = useState(0);
-
-  // useEffect(() => {
-  //   api.get("/projects").then((res) => {
-  //     console.log(res);
-  //   });
-  // }, []);
-
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/registration" element={<Registration />} />
-      </Routes>
-    </BrowserRouter>
+    <AuthProvider>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<ProtectedRoute />} />
+          <Route path="/auth" element={<Auth />} />
+          <Route path="/auth/registration" element={<Registration />} />
+          <Route path="/auth/login" element={<Login />} />
+        </Routes>
+      </BrowserRouter>
+    </AuthProvider>
   );
 }
 

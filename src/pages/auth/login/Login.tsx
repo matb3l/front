@@ -3,22 +3,30 @@ import { Button, Form, Input, message } from "antd";
 import { Controller, useForm } from "react-hook-form";
 import { registerSchema } from "./model/schema";
 import { RegistrationFormType } from "./types";
-import { useCreateUserStore } from "./model/store";
+import { useLoginUserStore } from "./model/store";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "@context/auth/AuthContext";
 
-export const Registration = () => {
+export const Login = () => {
   const { control, handleSubmit, reset } = useForm<RegistrationFormType>({
     resolver: yupResolver(registerSchema),
   });
 
-  const createUser = useCreateUserStore((state) => state.fetchCreateuser);
+  const createUser = useLoginUserStore((state) => state.fetchLoginuser);
   const navigate = useNavigate();
 
-  const onSubmit = (data: RegistrationFormType) => {
-    createUser({ email: data.email, password: data.password });
+  const { setToken } = useAuth();
+
+  const onSubmit = async (data: RegistrationFormType) => {
+    const token = await createUser({
+      email: data.email,
+      password: data.password,
+    });
     reset();
-    message.success("Вы успешно зарегестрировались!");
-    navigate("/auth/login");
+    console.log("token", token);
+    setToken(token.access_token);
+    message.success("Вы вошли!");
+    navigate("/");
   };
 
   return (
@@ -53,23 +61,8 @@ export const Registration = () => {
             </Form.Item>
           )}
         />
-        <Controller
-          name="confirmPassword"
-          control={control}
-          render={({
-            field: { onChange, value },
-            fieldState: { error, invalid },
-          }) => (
-            <Form.Item
-              help={error ? error.message : undefined}
-              validateStatus={error ? "error" : undefined}
-            >
-              <Input onChange={onChange} value={value} type="password" />
-            </Form.Item>
-          )}
-        />
         <Button type="primary" htmlType="submit">
-          Зарегестрироваться
+          Войти
         </Button>
       </Form>
     </div>
