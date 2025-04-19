@@ -6,11 +6,11 @@ import { Registration } from "@pages/auth/registration";
 function App() {
   const [count, setCount] = useState(0);
 
-  useEffect(() => {
-    api.get("/projects").then((res) => {
-      console.log(res);
-    });
-  }, []);
+  // useEffect(() => {
+  //   api.get("/projects").then((res) => {
+  //     console.log(res);
+  //   });
+  // }, []);
 
   return (
     <BrowserRouter>
